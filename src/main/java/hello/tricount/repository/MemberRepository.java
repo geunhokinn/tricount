@@ -48,4 +48,9 @@ public class MemberRepository {
             return member;
         };
     }
+
+    public Optional<Member> findById(Long id) {
+        List<Member> result = jdbcTemplate.query("SELECT * FROM member WHERE id = ?", memberRowMapper(), id);
+        return result.stream().findAny();
+    }
 }
