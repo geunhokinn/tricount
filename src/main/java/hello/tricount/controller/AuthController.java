@@ -35,7 +35,7 @@ public class AuthController {
     public ResponseEntity<Member> login(@RequestBody LoginRequest loginRequest, HttpServletResponse response) {
         Member member = memberService.login(loginRequest.getLoginId(), loginRequest.getPassword());
 
-        Cookie cookie = new Cookie(TricountConst.LOGIN_MEMBER_COOKIE, member.getLoginId());
+        Cookie cookie = new Cookie(TricountConst.LOGIN_MEMBER_COOKIE, String.valueOf(member.getId()));
         response.addCookie(cookie);
 
         return new ResponseEntity<>(member, HttpStatus.OK);
