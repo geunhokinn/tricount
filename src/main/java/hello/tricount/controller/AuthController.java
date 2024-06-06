@@ -40,4 +40,13 @@ public class AuthController {
 
         return new ResponseEntity<>(member, HttpStatus.OK);
     }
+
+    @PostMapping("logout") // 쿠키만 없앰
+    public ResponseEntity<Void> logout(HttpServletResponse response) {
+        // 쿠키는 꺼내서 없애는 방법이 없음
+        Cookie cookie = new Cookie(TricountConst.LOGIN_MEMBER_COOKIE, null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
 }
