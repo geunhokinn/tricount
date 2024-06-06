@@ -19,4 +19,9 @@ public class MemberService {
         return memberRepository.findByLoginId(loginId, password)
                 .orElseThrow(() -> new RuntimeException("Member info is not found"));
     }
+
+    public Member findMemberByID(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Member info is not found"));
+    }
 }
