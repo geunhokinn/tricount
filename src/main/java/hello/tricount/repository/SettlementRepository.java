@@ -1,13 +1,18 @@
 package hello.tricount.repository;
 
+import hello.tricount.model.Member;
 import hello.tricount.model.Settlement;
 import lombok.RequiredArgsConstructor;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 @RequiredArgsConstructor
@@ -34,5 +39,35 @@ public class SettlementRepository {
     public void addParticipantToSettlement(Long settlementId, Long memberId) {
         jdbcTemplate.update("INSERT INTO settlement_participant (settlement_id, member_id) VALUES (?, ?)",
             settlementId, memberId);
+    }
+
+    public Optional<Settlement> findById(Long id) {
+        List<Settlement> result = jdbcTemplate.query("select * from settlement "
+                + "join settlement_participant on settlement.id = settlement_participant.settlement_id "
+                + "join member on settlement_participant.member_id = member.id "
+                + "where settlement.id = ?", settlementParticipantsRowMapper(), id);
+        return result.stream().findAny();
+    }
+
+    private RowMapper<Settlement> settlementParticipantsRowMapper() {
+        return ((rs, rowNum) -> {
+            Settlement settlement = new Settlement();
+            settlement.setId(rs.getLong("settlement.id"));
+            settlement.setName(rs.getString("settlement.name"));
+
+            List<Member> participants = new ArrayList<>();
+            do {
+                Member participant = new Member(
+                        rs.getLong("member.id"),
+                        rs.getString("member.login_id"),
+                        rs.getString("member.name"),
+                        rs.getString("member.password")
+                );
+                participants.add(participant);
+            } while(rs.next());
+
+            settlement.setParticipants(participants);
+            return settlement;
+        });
     }
 }
