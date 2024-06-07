@@ -20,5 +20,9 @@ public class SettlementService {
         return settlement;
     }
 
+    public void joinSettlement(Long settlementId) {
+        // 정산방이 있는지 체크
+        settlementRepository.addParticipantToSettlement(settlementId, MemberContext.getMember().getId());
+    }
 
 }
