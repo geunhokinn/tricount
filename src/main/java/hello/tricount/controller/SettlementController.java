@@ -1,14 +1,14 @@
 package hello.tricount.controller;
 
+import hello.tricount.model.BalanceResult;
 import hello.tricount.model.Settlement;
 import hello.tricount.service.SettlementService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,5 +27,10 @@ public class SettlementController {
         settlementService.joinSettlement(id);
 
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/settles/{id}/balance")
+    public ResponseEntity<List<BalanceResult>> getSettlementBalanceResult(@PathVariable("id") Long settlementId) {
+        return new ResponseEntity<>(settlementService.getBalanceResult(settlementId), HttpStatus.OK);
     }
 }
